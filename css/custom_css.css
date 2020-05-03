@@ -1,0 +1,108 @@
+/******
+Allison custom css for exploring missingness tutorial
+*******/
+
+body {
+  background-color: #ffffff;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 12;
+}
+
+em {
+    font-family: 'Source Sans Pro', sans-serif;
+    color: slategrey;
+}
+
+.ace-tm {
+    background-color: #ffffff;
+    color: black;
+}
+
+.panel, pre {
+    border-radius: 0;
+    border-color: #e0e0e0;
+    background-color: #ffffff;
+}
+
+.panel-default > .panel-heading {
+    color: #555555;
+    background-color: #ffffff;
+    border-color: #dddddd;
+}
+
+.topicsList .topic {
+    font-family: 'Roboto Slab', serif;
+    line-height: 40px;
+    font-size: 15px;
+    padding-left: 10px;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-size: 2px 80px;
+    background-position: left 100%;
+        background-position-y: 100%;
+    background-image: url(images/topicProgress.png);
+    border-bottom: 1px solid teal;
+    -webkit-transition-property: background-position;
+    transition-property: background-position;
+    -webkit-transition-duration: 0.25s;
+    transition-duration: 0.25s;
+}
+
+.topicsList .topic.current {
+    font-family: 'Roboto Slab', serif;
+    background-color: orange;
+    color: #ffffff;
+    border: 0px;
+}
+
+code {
+    font-family: 'Roboto Mono', monospace;
+    color: gray;
+    background-color: #ffecdd;
+    font-size: 12px;
+}
+
+a {
+    font-family: 'Source Sans Pro', sans-serif;
+    color: teal;
+    text-decoration: none;
+}
+
+.btn-primary, .btn-success, .btn-info {
+    color: #ffffff;
+    background-color: orange;
+    background-image: none;
+    border: none;
+    font-family: 'Roboto Slab', serif;
+}
+
+.btn-default {
+    color: #ffffff;
+    background-color: orange;
+    background-image: none;
+    border: none;
+    font-family: 'Roboto Slab', serif;
+}
+
+h2 {
+  color: teal;
+  font-family: 'Roboto Slab', serif;
+}
+
+h3 {
+  color: teal;
+  font-family: 'Roboto Slab', serif;
+}
+
+h4 {
+  color: teal;
+  font-family: 'Roboto Slab', serif;
+}
+
+h5 {
+    color: darkorange;
+    background-color: white;
+    display: inline-block;
+    font-family: 'Roboto Slab', serif;
+    font-size: 16px;
+}

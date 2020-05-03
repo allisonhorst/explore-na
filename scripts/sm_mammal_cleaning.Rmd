@@ -1,0 +1,89 @@
+---
+title: "Wrangling Kanza Prairie mammal data"
+author: "Allison Horst"
+date: "5/1/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+library(tidyverse)
+library(janitor)
+library(naniar)
+library(skimr)
+library(lubridate)
+```
+
+**Dataset title:** CSM08 Small mammal host-parasite sampling data for 16 linear trapping transects located in 8 LTER burn treatment watersheds at Konza Prairie
+
+**Data:** https://portal.lternet.edu/nis/mapbrowse?packageid=knb-lter-knz.99.3
+
+**Metadata:** https://portal.lternet.edu/nis/metadataviewer?packageid=knb-lter-knz.99.3
+
+**Citation:** Hope A. 2019. CSM08 Small mammal host-parasite sampling data for 16 linear trapping transects located in 8 LTER burn treatment watersheds at Konza Prairie. Environmental Data Initiative. https://doi.org/10.6073/pasta/69109c56fcf21a30a8d37369cb47f8de. Dataset accessed 5/01/2020.
+
+### Get data & clean:
+```{r}
+kp <- read_csv(here::here("data","kp_sm_mammals.csv")) %>% 
+  clean_names() %>% 
+  select(date, watershed, transect, species, total_length:age) %>% 
+  filter(species %in% c("SIHI","PMLE","PMMA","MIOC")) %>% 
+  mutate(common_name = case_when(
+    species == "SIHI" ~ "cotton rat",
+    species == "PMLE" ~ "white-footed mouse",
+    species == "PMMA" ~ "deer mouse",
+    species == "MIOC" ~ "prairie vole"
+  )) %>% 
+  purrr::map_df(tolower) %>% 
+  replace_with_na_all(~.x %in% c("sj","?")) %>% 
+  relocate(common_name, .after = species) %>% 
+  select(-species, -watershed, -transect) %>% 
+  mutate(ear_length = na_if(ear_length, ".")) %>% 
+  mutate(date = mdy(date))
+
+write_csv(kp, here::here("data","kp_mammals.csv"))
+```
+
+### Read-in new CSV for testing:
+```{r}
+kp_data <- read_csv(here("data","kp_mammals.csv"))
+```
+
+
+
+### Counts: 
+```{r}
+kp_data %>% 
+  count(common_name) %>% 
+  arrange(-n)
+
+# Four most common species in dataset: 
+# SIHI (380): Sigmodon hispidus (cotton rat) - fun fact, first model organism in polio research
+# PMLE (313): Peromyscus leucopus (white-footed mouse)
+# PMMA (151): Peromyscus maniculatus (N. Am. deer mouse)
+# MIOC (127): Microtus ochrogaster (prairie vole)
+```
+
+### Visualize total missings
+```{r}
+vis_miss(kp_data)
+```
+
+### Visualize missings by intersection
+
+Only includes variables that have missings. That's cool. 
+An upset plot! 
+See more: https://cran.r-project.org/web/packages/naniar/vignettes/naniar-visualisation.html
+```{r}
+gg_miss_upset(kp_data, nsets = 7)
+```
+
+Cool!!!! 
+
+What about trying to see differences in missings by species? `gg_miss_fct()`! So cool...
+
+```{r}
+gg_miss_fct(kp_data, fct = common_name)
+```
+
