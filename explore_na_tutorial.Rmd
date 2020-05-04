@@ -29,14 +29,17 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Create objects use throughout tutorial:
 
-# Read in data as `kp_data`
-kp_data <- read_csv(here::here("data","kp_mammals.csv")) %>% 
+# Read in data as `kp_rodents`
+kp_rodents <- read_csv(here::here("data","kp_mammals.csv")) %>% 
   arrange(date)
 
 # Find counts by rodent species
-kp_counts <- kp_data %>% 
+kp_counts <- kp_rodents %>% 
   count(common_name) %>% 
   arrange(-n)
+
+wf_mouse <- kp_rodents %>% 
+  filter(common_name == "white-footed mouse")
 
 ```
 
@@ -112,7 +115,7 @@ knitr::include_graphics("www/rodents.png")
 
 ### General data structure:
 
-Our data table (commonly called a **tibble** or **data frame** in *R*) is already in tidy format, meaning that it is rectangular and: 
+Our data table (commonly called a **tibble** or **data frame** in *R*) is pre-imported and already in tidy format, meaning that it is rectangular and: 
 
 - Each variable is a column
 - Each observation is a row
@@ -120,7 +123,7 @@ Our data table (commonly called a **tibble** or **data frame** in *R*) is alread
 Here is a glimpse of 15 lines from the data (out of 971 total observations):
 
 ```{r, echo = FALSE}
-kp_data %>% 
+kp_rodents %>% 
   slice(100:114) %>% 
   kable() %>% 
   kable_styling(full_width = FALSE,
@@ -152,16 +155,16 @@ For our first steps into `naniar`, we'll use three functions to get quick counts
 
 Use [`n_miss()`](https://www.rdocumentation.org/packages/naniar/versions/0.4.2/topics/n_miss) to return the total `NA` count for the entire data frame, or for a specific variable (column). We use `$` to specify a single column (for example, `fruit$apples` refers to the `apples` column in the `fruit` data frame). 
 
-Our data frame is pre-imported and stored as object `kp_data` (for Konza Prairie data). 
+**Our data frame is pre-imported and stored as object `kp_rodents` (for Konza Prairie rodents).** 
 
-Run the examples below, then try the exercises to find `NA` counts for the `kp_data` data frame!
+Run the examples below, then try the exercises to find `NA` counts for the `kp_rodents` data frame!
 
 ##### `r fa("fas fa-robot", height = 25, fill = "orange")` Example 3.1
 
-Return the total `NA` count for the entire `kp_data` data frame. Press 'Run' to see the outcome! 
+Return the total `NA` count for the entire `kp_rodents` data frame. Press 'Run' to see the outcome! 
 
 ```{r n_miss_kp, exercise = TRUE}
-n_miss(kp_data)
+n_miss(kp_rodents)
 ```
 
 ##### `r fa("fas fa-robot", height = 25, fill = "orange")` Example 3.2
@@ -169,19 +172,19 @@ n_miss(kp_data)
 Return the total `NA` count only for the `weight` column. 
 
 ```{r n_miss_kp_weight, exercise = TRUE}
-n_miss(kp_data$weight)
+n_miss(kp_rodents$weight)
 ```
 
 ##### `r fa("fas fa-keyboard", height = 25, fill = "orange")` Code exercise: n_miss( )
 
-Your turn! In the blank code chunk below, write code that returns the total number of `NA`s in the `age` column of `kp_data`. Notice that you can see the solution (but make sure to try coding it yourself manually first!). 
+Your turn! In the blank code chunk below, write code that returns the total number of `NA`s in the `age` column of `kp_rodents`. Notice that you can see the solution (but make sure to try coding it yourself manually first!). 
 
 ```{r exercise_na_miss_1, exercise = TRUE}
 
 ```
 
 ```{r exercise_na_miss_1-solution}
-n_miss(kp_data$age)
+n_miss(kp_rodents$age)
 ```
 
 ### pct_miss( ) returns % of values that are NA
@@ -190,16 +193,16 @@ Often, the *proportion* of missings in a data frame or column are just as (or mo
 
 ##### `r fa("fas fa-robot", height = 25, fill = "orange")` Example 3.3
 
-Find the percent of values that are `NA` for the entire `kp_data` data frame.
+Find the percent of values that are `NA` for the entire `kp_rodents` data frame.
 
 ```{r pct_miss_1, exercise = TRUE}
-pct_miss(kp_data)
+pct_miss(kp_rodents)
 ```
-So `r round(pct_miss(kp_data), 1)`% of all cells in `kp_data` contain `NA`.
+So `r round(pct_miss(kp_rodents), 1)`% of all cells in `kp_rodents` contain `NA`.
 
 ##### `r fa("fas fa-keyboard", height = 25, fill = "orange")` Code exercise: pct_miss( )
 
-What percent of values in the `ear_length` column of `kp_data` are `NA`?
+What percent of values in the `ear_length` column of `kp_rodents` are `NA`?
 
 ```{r pct_miss_2, exercise = TRUE}
 
@@ -220,7 +223,7 @@ The [`miss_var_summary()`](https://www.rdocumentation.org/packages/naniar/versio
 Use `miss_var_summary()` to create a summary table of missingness for all variables.
 
 ```{r miss_var_summary_1, exercise = TRUE}
-miss_var_summary(kp_data)
+miss_var_summary(kp_rodents)
 ```
 
 Another really cool thing about `miss_var_summary()` is that it also works with grouped data. For example, what if we wanted to break down the missingness report not just by variable, but also by rodent species. To do that, we can use `dplyr::group_by()` to indicate we want to group by the different levels in the `common_name` variable, *then* pipe into `miss_var_summary()`. 
@@ -228,7 +231,7 @@ Another really cool thing about `miss_var_summary()` is that it also works with 
 ##### `r fa("fas fa-robot", height = 25, fill = "orange")` Example 3.5
 
 ```{r miss_var_summary_gp1, exercise = TRUE}
-kp_data %>% 
+kp_rodents %>% 
   group_by(common_name) %>% 
   miss_var_summary()
 
@@ -237,14 +240,14 @@ We can see that now the missingness is reported by species *and* variable! But y
 
 ##### `r fa("fas fa-keyboard", height = 25, fill = "orange")` Code exercise: miss_var_summary( ) with grouped data
 
-Write code that summarizes missing counts and percentages in `kp_data` for all variables, grouped by `age`.
+Write code that summarizes missing counts and percentages in `kp_rodents` for all variables, grouped by `age`.
 
 ```{r miss_var_summary_gp2, exercise = TRUE}
 
 ```
 
 ```{r miss_var_summary_gp2-solution}
-kp_data %>% 
+kp_rodents %>% 
   group_by(age) %>% 
   miss_var_summary()
 ```
@@ -262,12 +265,12 @@ Data visualization is a critical part of exploratory data analysis, and should i
 
 The `vis_miss()` function in `naniar` is useful for getting an overall view of *where* and *how often* `NA`s exist in our data frame. It produces a binary heatmap, with all `NA` locations in <span style="color: black; font-weight: bold;">black</span> and all non-missing values in <span style="color: gray; font-weight: bold;">gray</span>. 
 
-Run the example code below to see the `vis_miss()` output for our `kp_data` data frame. 
+Run the example code below to see the `vis_miss()` output for our `kp_rodents` data frame. 
 
 ##### `r fa("fas fa-robot", height = 25, fill = "orange")` Example 4.1
 
 ```{r vis_miss, exercise = TRUE}
-vis_miss(kp_data)
+vis_miss(kp_rodents)
 ```
 
 What's shown in the visualization above? 
@@ -300,7 +303,7 @@ See Example 4.2 below, then complete the exercises to create your own.
 Use `gg_miss_fct()` to create a heatmap of % missingness across all 9 variables, split into groups by the different levels in the `age` variable (**a** = adult, **juv** = juvenile, **sa** = youth adult). 
 
 ```{r gg_miss_fct_1, warning = FALSE, exercise = TRUE}
-gg_miss_fct(kp_data, fct = age)
+gg_miss_fct(kp_rodents, fct = age)
 ```
 
 Cool! What can we learn from it? 
@@ -321,30 +324,28 @@ Now try an example where you create a heatmap for % missings using a different v
 
 ##### `r fa("fas fa-keyboard", height = 25, fill = "orange")` Code exercise
 
-Use `gg_miss_fct()` to create a heatmap of % missings in `kp_data` by variable, grouped by species (`common_name`).
+Use `gg_miss_fct()` to create a heatmap of % missings in `kp_rodents` by variable, grouped by species (`common_name`).
 
-```{r gg_miss_fct_2, exercise = TRUE}
+```{r gg_miss_fct_2, warning = FALSE, exercise = TRUE}
 
 ```
 
-```{r gg_miss_fct_2-solution}
-gg_miss_fct(kp_data, fct = common_name)
+```{r gg_miss_fct_2-solution, warning = FALSE}
+gg_miss_fct(kp_rodents, fct = common_name)
 ```
 
 ##### `r fa("brain", height = 25, fill = "orange")` Critical thinking
 
 Consider your heatmap from the code exercise above to answer the following:
 
-- Which of the four rodent species tended to have the *lowest* % missings, across all variables?
+- Which of the four rodent species tended to have the lowest % missings, across all variables?
 - Which two variables are most often missing, across all rodent species? 
 
 Now you have some options for initial `NA` visualization using `vis_miss()` and `gg_miss_fct()`. Frolic into the next section to discover how `NA`s intersect between variables and groups! 
 
 ## 5. Explore NA intersections
 
-In addition to the *number* and *percent* `NA`s by group and variable, we should also explore how often they co-occur across variables. For example, we might ask:
-
-"In how many observations were `total_length`, `tail_length` and `ear_length` missing?"
+In addition to the number and percent `NA`s by group and variable, we should also explore how often they co-occur across variables. For example, we might ask: **"In how many observations were only the variables `total_length`, `tail_length` and `ear_length` missing?"**
 
 In this section we'll use UpSet plots to explore `NA` intersections across variables. 
 
@@ -356,11 +357,11 @@ An UpSet plot, despite its name, provides a delightful alternative to a Venn dia
 
 ##### `r fa("fas fa-robot", height = 25, fill = "orange")` Example 5.1
 
-Create an UpSet plot for `NA` co-occurrence in the `kp_data` data frame.
+Create an UpSet plot for `NA` co-occurrence in the `kp_rodents` data frame.
 
-*Note: the argument `nsets = 7` below increases the number of variables included to 7 (default is 5), which accomodates our number of variables that contain `NA`s (recall that we started with 9 variables, but both date and common_name are 100% complete). The argument `nintersects = NA` increases the default number of intersections to show to include all possible combinations of missings in our data.* 
+*Note: the argument `nsets = 7` below increases the number of variables included to 7 (default is 5), which accomodates our number of variables that contain `NA`s (recall that we started with 9 variables, but both date and common_name are 100% complete). The argument `nintersects = NA` increases the default number of intersections to include all possible combinations of missings in our data.* 
 ```{r gg_miss_upset_kp, exercise = TRUE}
-gg_miss_upset(kp_data, 
+gg_miss_upset(kp_rodents, 
               nsets = 7, 
               nintersects = NA)
 ```
@@ -380,44 +381,78 @@ Let's consider the 4th vertical black column (frequency = 54). We can see that b
 
 Answer the following questions based on the UpSet plot created in Example 5.1:
 
-- In how many observations (rows) of `kp_data` are **only** `weight`, `ear_length` and `total_length` missing? 
+- In how many observations (rows) of `kp_rodents` are **only** `weight`, `ear_length` and `total_length` missing? 
 - How many observations are **only** missing `total_length`?
 
 
-So `gg_miss_upset()` provides a pretty low-code way to find `NA` co-occurrence across variables by group! 
+`gg_miss_upset()` provides a pretty low-code way to find `NA` intersections across variables! 
 
 *Advance to the next section explore relationships between your `NA`s and values for another variable!* 
 
 ## 6. Missing relationships
 
-So far we have explored missing *counts*, *proportions* and *co-occurrence*, but we don't have a clear sense of how *missings* in one variable might be distributed across values of *another variable.* That's a mouthful (and brainful), but consider a question like this: 
+So far we have explored missing counts, proportions and intersections, but we don't have a clear sense of how `NA`s in one variable might be distributed across **values** of another variable. 
 
-**Do most of my missing `weight` observations occur in association with high or low `hf_length` values, or are they randomly distributed?**
+In this section, we'll just explore our observations for the white-footed mouse. They are stored as object **wf_mouse**. The first 5 lines of the white-footed mouse subset (n = `r kp_counts$n[2]`) are shown below: 
 
-In the next section, we'll return to `naniar` to use `gg_miss_point()`, a function to visualize `NA`s of one variable associated with existing values in another variable. 
+```{r, echo = FALSE}
+wf_mouse %>% 
+  head(5) %>% 
+  kable() %>% 
+  kable_styling(full_width = FALSE,
+                bootstrap_options = "striped")
+```
 
-We might be able to start teasing out mechanisms of missingness if we can understand *why* `NA`s exist. Sometimes, that means it is useful to explore relationships between `NA`s in one variable, and values in another variable. 
 
-Let's consider an example using our Konza Prairie rodent data. We ask the question: **What values of `weight` have a missing value for `tail_length`, and vice-versa?**
+The code below creates a ggplot of white-footed mouse `tail_length` versus `total_length`. You should **also notice** the warning message returned above the graph: "## Warning: Removed 182 rows containing missing values (geom_point)." 
 
-We can't use `ggplot2` on its own to help us out, because `ggplot()` will automatically drop any cases (rows) where **any** of the variables used in the plot contain `NA`. Let's see what that looks like for our example: 
+```{r, echo = TRUE}
+ggplot(data = wf_mouse, aes(x = tail_length, y = total_length)) +
+  geom_point(size = 2, color = "cyan4") +
+  theme_minimal()
+```
+That warning message gives us a hint about what's missing from this graph: from the `r kp_counts$n[2]` white-footed mouse observations, 182 of them have `NA` values for `total_length`, `weight`, or both. That leaves us with 131 points on the graph above. 
+
+Our question for this section is: **For which existing values of `total_length` and `tail_length` is the other variable `NA`?**
+
+### geom_miss_point( ) to reveal hidden NAs
+
+The `geom_miss_point()` function in `naniar` allows us to visualize the location of missing values in ggplot2. Run the exercise below to see what `geom_miss_point()` returns.
+
+##### `r fa("fas fa-robot", height = 25, fill = "orange")` Example 6.1
+
+Add `geom_miss_point()` to the base ggplot to see values of white-footed mouse `tail_length` have an associated `NA` for `total_length`, and vice-versa. 
+
+```{r geom_miss_point_1, exercise = TRUE}
+ggplot(data = wf_mouse, aes(x = tail_length, y = total_length)) + 
+  geom_point() +
+  geom_miss_point() +
+  scale_color_manual(values = c("darkorange","cyan4")) +
+  theme_minimal()
+```
+What does this show us? 
+
+
+```{r geom_miss_point_2, exercise = TRUE}
+ggplot(data = wf_mouse, aes(x = total_length, y = hf_length)) + 
+  geom_point() +
+  geom_miss_point()
+```
+
+
+
+We'll use `gg_miss_point()` to visualize which non-missing values of one variable have `NA`s for another variable. 
 
 ##### Example 5.1
 
+Let's consider an example using our Konza Prairie rodent data. We ask the question: **What values of `weight` have a missing value for `tail_length`, and vice-versa?**
+
+First, let's 
+
+We can't use `ggplot2` on its own to help us out, because `ggplot()` will automatically drop any cases (rows) where **any** of the variables used in the plot contain `NA`. Let's see what that looks like for our example: 
+
 Create a scatterplot of `weight` vs. `tail_length` with `ggplot()`. **Note:** Code beyond the `ggplot()` and `geom_point()` lines is optional (to update aesthetics). Feel free to play around with colors, values, etc. to customize the graph! 
 
-```{r ggplot_na_kp, exercise = TRUE}
-ggplot(data = kp_data, aes(x = tail_length, y = weight)) +
-  geom_point(aes(color = common_name,
-                 shape = common_name),
-             size = 2) +
-  scale_color_manual(values = c("orange",
-                                "deepskyblue3",
-                                "cyan4",
-                                "darkorange3")) + 
-  scale_shape_manual(values=c(15, 16, 18, 17)) +
-  theme_minimal()
-```
 <br>
 
 **First:** interesting, rodents. 
@@ -431,7 +466,7 @@ We can use `geom_miss_point()` to visualize which **observed values** of `weight
 View locations of `NA`s using `geom_miss_point()`: 
 
 ```{r geom_miss_point_kp, exercise = TRUE}
-ggplot(data = kp_data, aes(x = tail_length, y = weight)) +
+ggplot(data = kp_rodents, aes(x = tail_length, y = weight)) +
   geom_point() +
   geom_miss_point() +
   scale_color_manual(values = c("deepskyblue4","orange")) +
@@ -465,7 +500,7 @@ We can also split up our graph of missing relationships by group using `facet_wr
 Here, we start with the same code as above and add `facet_wrap(~common_name)` to break our graph into a single graph for each species in the study. The optional `scales = "free"` argument allows the x- and y-axis limits to changed within each panel. 
 
 ```{r geom_miss_pt_facet, exercise = TRUE}
-ggplot(data = kp_data, aes(x = tail_length, y = weight)) +
+ggplot(data = kp_rodents, aes(x = tail_length, y = weight)) +
   geom_point() +
   geom_miss_point() +
   scale_color_manual(values = c("deepskyblue4","orange")) +
