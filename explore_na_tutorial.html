@@ -749,16 +749,15 @@ a
 <div id="section-example-5.1" class="section level5">
 <h5><svg style="height:0.8em;top:.04em;position:relative;fill:orange;" viewBox="0 0 640 512"><path d="M0 256v128c0 17.7 14.3 32 32 32h32V224H32c-17.7 0-32 14.3-32 32zM464 96H352V32c0-17.7-14.3-32-32-32s-32 14.3-32 32v64H176c-44.2 0-80 35.8-80 80v272c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64V176c0-44.2-35.8-80-80-80zM256 416h-64v-32h64v32zm-32-120c-22.1 0-40-17.9-40-40s17.9-40 40-40 40 17.9 40 40-17.9 40-40 40zm128 120h-64v-32h64v32zm96 0h-64v-32h64v32zm-32-120c-22.1 0-40-17.9-40-40s17.9-40 40-40 40 17.9 40 40-17.9 40-40 40zm192-72h-32v192h32c17.7 0 32-14.3 32-32V256c0-17.7-14.3-32-32-32z"/></svg> Example 5.1</h5>
 <p>Create an UpSet plot for <code>NA</code> co-occurrence in the <code>kp_rodents</code> data frame.</p>
-<p><em>Note: the argument <code>nsets = 7</code> below increases the number of variables included to 7 (default is 5), which accomodates our number of variables that contain <code>NA</code>s (recall that we started with 9 variables, but both date and common_name are 100% complete). The argument <code>nintersects = NA</code> increases the default number of intersections to include all possible combinations of missings in our data.</em></p>
+<p>*Note: the argument <code>nsets = 7</code> below increases the number of variables included to 7 (default is 5), which accomodates our number of variables that contain <code>NA</code>s (recall that we started with 9 variables, but both date and common_name are 100% complete).</p>
 <div class="tutorial-exercise" data-label="gg_miss_upset_kp" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>gg_miss_upset(kp_rodents, 
-              nsets = 7, 
-              nintersects = NA)</code></pre>
+              nsets = 7)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
 </div>
-<div id="section-nobody-panic.-yes-its-a-lot.-lets-break-it-down." class="section level4">
-<h4>Nobody panic. Yes it’s a lot. Let’s break it down.</h4>
+<div id="section-try-not-to-panic.-yes-its-a-lot.-lets-break-it-down." class="section level4">
+<h4>Try not to panic. Yes it’s a lot. Let’s break it down.</h4>
 <p>First, a general summary of our UpSet plot:</p>
 <ul>
 <li>The horizontal black bars in the lower left indicate the number of <code>NA</code>s total for each variable, with the variable name shown to the right of the corresponding horizontal bar</li>
@@ -1096,34 +1095,51 @@ a
 <li>What do the orange dots represent?</li>
 <li>Are there any cotton rat observations where total length is recorded, but weight is <code>NA</code>?</li>
 </ul>
-<p>In summary, <code>geom_miss_point()</code> allows us to explore “hidden” missing observations that were removed because one of the variables is <code>NA</code>, and may give insight into whether the missingness of one variable is related to the <em>value</em> of another!</p>
+<p>In summary, <code>geom_miss_point()</code> allows us to explore “hidden” missing observations that were removed because one of the variables is <code>NA</code>, and may give insight into whether the missingness of one variable is related to the <em>value</em> of another.</p>
 </div>
 </div>
 </div>
-<div id="section-learn-more" class="section level2">
-<h2>7. Learn more</h2>
-<p>Let’s return to the question posed in the introduction: <strong>“How do we explore observations that don’t exist?”</strong></p>
-<p>Even from this short tutorial, hopefully your answer is: <strong>“Well, a bunch of different ways!”</strong></p>
-<div id="section-functions-we-used-in-this-tutorial" class="section level3">
-<h3>Functions we used in this tutorial</h3>
-<p>In this tutorial, we used helpful functions to count and visualize <code>NA</code>s, like:</p>
-<p>From the <code>skimr</code> package (which has a lot of other useful functions to check out):</p>
-<ul>
-<li><code>skim()</code> to count <code>NA</code>s by variable</li>
-</ul>
-<p>From the <code>naniar</code> package:</p>
+<div id="section-keep-exploring" class="section level2">
+<h2>7. Keep exploring</h2>
+<p>Let’s return to the question posed in the introduction: <strong>“How do we explore observations that don’t exist?”</strong> Hopefully your answer after this brief tutorial is: <strong>“Well, a bunch of different ways!”</strong></p>
+<div id="section-functions-in-this-tutorial" class="section level3">
+<h3>Functions in this tutorial</h3>
+<p>In this tutorial, we used functions to count and visualize <code>NA</code>s from the <code>naniar</code> package:</p>
 <ul>
 <li><code>n_miss()</code>: returns <code>NA</code> frequency in your data frame or column</li>
+<li><code>n_complete()</code>: returns non-<code>NA</code> value count<br />
+</li>
+<li><code>prop_miss()</code>: returns proportion <code>NA</code></li>
 <li><code>miss_var_summary()</code>: makes summary table of <code>NA</code> counts and proportions</li>
 <li><code>vis_miss()</code>: visualize a tile graph of missings by variable</li>
 <li><code>gg_miss_fct()</code>: make a heatmap of <code>NA</code>s by variable and group</li>
 <li><code>gg_miss_upset()</code>: explore co-occurrence of <code>NA</code>s across variables</li>
 <li><code>geom_miss_point()</code>: add locations of <code>NA</code> values along ggplot axes</li>
 </ul>
+<p>With these coder-friendly tools, <strong>you’re on your way to becoming a missing explorer…</strong></p>
 </div>
-<div id="section-theres-so-much-more" class="section level3">
-<h3>There’s so much more!</h3>
-<p>Here are a few great resources with more about exploring, visualizing and imputing missing values:</p>
+<div id="section-but-theres-so-much-more-exploring-to-do" class="section level3">
+<h3>…but there’s so much more exploring to do!</h3>
+<p>Here are some resources to continue in your missingness adventures.</p>
+<div id="section-continue-exploring-around-naniar" class="section level4">
+<h4>Continue exploring around naniar:</h4>
+<ul>
+<li><a href="https://cran.r-project.org/web/packages/naniar/vignettes/getting-started-w-naniar.html">Click here</a> for more ways to explore missingness in <code>naniar</code>!</li>
+<li>Read Nick Tierney and Dianne Cook’s paper on <a href="https://arxiv.org/abs/1809.02264">Expanding tidy data principles to facilitate missing data exploration, visualization and assessment of imputations</a></li>
+<li>See Nick’s <a href="http://naniar.njtierney.com/articles/naniar-visualisation.html">Gallery of Missing Visualizations</a> for more options &amp; ideas</li>
+</ul>
+</div>
+<div id="section-learn-more-about-mechanisms-of-missingness-and-imputation" class="section level4">
+<h4>Learn more about mechanisms of missingness and imputation:</h4>
+<ul>
+<li>Nakagawa, Shinichi (2015). Missing data: mechanisms, methods, and messages. In Gordon A. Fox et al. <em>(Eds.)</em>, <em>Ecological Statistics: Contemporary Theory and Application (First Edition)</em>. Oxford University Press.</li>
+<li>van Buuren, Stef (2018). <em>Flexible imputation of missing data</em>. Chapman &amp; Hall / CRC Press. Available online: <a href="https://stefvanbuuren.name/fimd/" class="uri">https://stefvanbuuren.name/fimd/</a></li>
+</ul>
+</div>
+</div>
+<div id="section-learn-more-about-learnr" class="section level3">
+<h3>Learn more about learnr</h3>
+<p>This tutorial was made with the <code>learnr</code> package in R. See a <code>learnr</code> intro and examples: <a href="https://rstudio.github.io/learnr/" class="uri">https://rstudio.github.io/learnr/</a></p>
 
 <script type="application/shiny-prerendered" data-context="server-start">
 # Attach packages:
