@@ -38,8 +38,13 @@ kp_counts <- kp_rodents %>%
   count(common_name) %>% 
   arrange(-n)
 
+# Create subset of white-footed mouse
 wf_mouse <- kp_rodents %>% 
   filter(common_name == "white-footed mouse")
+
+# Create subset of cotton rat
+cotton_rat <- kp_rodents %>% 
+  filter(common_name == "cotton rat")
 
 ```
 
@@ -80,15 +85,15 @@ knitr::include_graphics("www/code_exercise_key.png")
 The brain icon indicates critical thinking questions. There may not be a right or wrong answer (and there are probably many right answers to most of them). 
 
 
-**Disclaimer:** *There are many ways to explore `NA` values in R. This tutorial introduces several `naniar` functions that I find really useful. It is not comprehensive.*
+**NOTE:** *There are many ways to explore `NA` values in R. This tutorial introduces several `naniar` functions that I find really useful. It is not comprehensive.*
 
-*OK, you're all set to start exploring! Click below to meet the data we'll use in this tutorial!* 
+OK, you're all set to start with this tutorial! Click below to meet the data we'll use in this tutorial! 
 
 ## 2. Meet the data
 
 In this tutorial, we'll explore missing values in rodent size measurements generously made available by Andrew Hope and the [Konza Prairie Long Term Ecological Research Program](http://lter.konza.ksu.edu/konza-prairie-long-term-ecological-research-lter). 
 
-Click [HERE](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-knz.99.3) to access original data and metadata.
+**DATA WARNING:** This tutorial works with a simplified subset of the original KP LTER data and is **only** meant as sample data to learn tools for exploring and considering missing values. It should not be used to draw conclusions about relationships, as important variables about location, transect, disposition, and more are excluded. Refer to the original data, metadata and related publications for more information.  Click [HERE](http://lter.konza.ksu.edu/content/csm08-small-mammal-host-parasite-sampling-data-16-linear-trapping-transects-located-8-lter) to access original data and metadata.
 
 **Citation:** Hope A. 2019. CSM08 Small mammal host-parasite sampling data for 16 linear trapping transects located in 8 LTER burn treatment watersheds at Konza Prairie. Environmental Data Initiative. https://doi.org/10.6073/pasta/69109c56fcf21a30a8d37369cb47f8de. Dataset accessed 5/01/2020.
 
@@ -448,6 +453,7 @@ ggplot(data = wf_mouse, aes(x = tail_length, y = total_length)) +
   geom_point(size = 2, color = "cyan4") +
   theme_minimal()
 ```
+
 That warning message gives us a hint about what's missing from this graph: from the `r kp_counts$n[2]` white-footed mouse observations, 182 of them have `NA` values for `total_length`, `weight`, or both. That leaves us with 131 points on the graph above. 
 
 Our question for this section is: **For which existing values of `total_length` and `tail_length` is the other variable `NA`?**
@@ -467,81 +473,145 @@ ggplot(data = wf_mouse, aes(x = tail_length, y = total_length)) +
   scale_color_manual(values = c("darkorange","cyan4")) +
   theme_minimal()
 ```
-What does this show us? 
 
+**Hmmmm. What am I looking at?**
+
+- <span style="color: #008280; font-weight: bold;">Teal dots</span> in the graph above indicate the 131 observations where there are existing values for both variables (in this case, `tail_length` and `total_length`) 
+
+- <span style="color: #ff7a12; font-weight: bold;">Orange dots</span> indicate our observations for which at least *one variable* is `NA`. Orange dots along the axes indicate an observed value for that axis variable for which the other variable in that observation is `NA`; the perfect diagonal line of orange dots represent observations for which both variables are `NA`.  
+
+**Breaking it down further for this example:**
+
+First, notice that there are no vertically arranged orange dots along the `total_length` axis. That means that there are *no* rows for the white-footed mice subset where `total_length` has an existing value, but `tail_length` is `NA`. If there *were* any observations of white-footed mice that did have a value for `total_length`, but `NA` for `tail_length`, an <span style="color: #ff7a12; font-weight: bold;">orange dot</span> would be shown along the y-axis indicating the value of `total_length` for which `tail_length` was `NA`. 
+
+Next, let's take a look at the <span style="color: #ff7a12; font-weight: bold;">orange dots</span> along the horizontal axis. These indicate existing values of `tail_length` for which `total_length` in that observation (row) is `NA`. Looking at the distribution of `NA` values, we should ask: 
+
+**Does it appear that `NA`s for `total_length` are equally likely across all values of `tail_length`? Or does it look like the probability of `total_length` being missing differs based on the observed value for `tail_length`?**
+
+Visually, it looks (in this example) like `total_length` missingness is similarly likely across all values of `tail_length` - i.e. the *value of `tail_length` does not appear to influence missingness in `total_length`*. That is important because it can help us think about *mechanisms of data missingness*. If the probability of missingness of one variable depends on the value or outcome of *another observed variable* in the data, those missings might be **Missing at Random** - which, if unaccounted for in analyses that use listwise deletion, can bias parameter estimates. 
+Let's consider another example. 
+
+##### `r fa("fas fa-robot", fill = "orange")` Example 6.2
+
+Now, let's consider another relationship: total rodent length and hind foot length. 
 
 ```{r geom_miss_point_2, exercise = TRUE}
 ggplot(data = wf_mouse, aes(x = total_length, y = hf_length)) + 
   geom_point() +
-  geom_miss_point()
+  geom_miss_point() +
+  scale_color_manual(values = c("darkorange","cyan4")) +
+  theme_minimal()
 ```
 
-We'll use `gg_miss_point()` to visualize which non-missing values of one variable have `NA`s for another variable. 
+##### `r fa("brain", fill = "orange")` Critical thinking
 
-##### Example 5.1
+Consider the output from Example 6.2 above to answer the following: 
 
-Let's consider an example using our Konza Prairie rodent data. We ask the question: **What values of `weight` have a missing value for `tail_length`, and vice-versa?**
+1. Are any observations (rows) in the white-footed mouse subset for which there **is** a value for `total_length`, but `hf_length` is `NA`?
 
-First, let's 
+2. Are there observations in the white-footed mouse subset that are missing both `hf_length` *and* `total_length`? If yes, where are they on the graph? 
 
-We can't use `ggplot2` on its own to help us out, because `ggplot()` will automatically drop any cases (rows) where **any** of the variables used in the plot contain `NA`. Let's see what that looks like for our example: 
+3. Are there observations in the white-footed mouse subset for which hind foot length was recorded, but total length is missing? 
 
-Create a scatterplot of `weight` vs. `tail_length` with `ggplot()`. **Note:** Code beyond the `ggplot()` and `geom_point()` lines is optional (to update aesthetics). Feel free to play around with colors, values, etc. to customize the graph! 
+4. Does it appear that missingness of total length is equally likely across all observed values of hind foot length, or does it *look* (in this cursory exploration) like the value of hind foot length might impact the likelihood of total length being recorded? 
 
-<br>
+**Note:** This is not a diagnosis of the mechanism of missingness. However, this might inspire further digging, analysis and exploration that can help to decide how to deal with `NA`s. 
 
-**First:** interesting, rodents. 
+### Explore missing relationships for multiple groups
 
-**Second:** we see that a warning is returned that it "Removed 338 rows containing missing values (geom_point)." That means that there were 338 observations in our data where `weight` and/or `tail_length` were `NA`. Those observations don't show up *anywhere* in the graph above. 
+In the examples above, we learned to use `geom_miss_point()` to explore missing relationships for a single group. We **could** create three other subsets manually, one for each species, and do the same thing. *Or* we can add `facet_wrap()` to automatically create a graph of missing values for each group, based on a variable of our choosing. 
 
-We can use `geom_miss_point()` to visualize which **observed values** of `weight` have an `NA` for `tail_length`, and vice-versa. We can understand that a bit better after making the graph in Example 5.2. 
+First, let's return to the full **kp_rodents** data frame and look at the relationship between tail length and weight for all four rodent species: 
 
-##### Example 5.2
+```{r, echo = TRUE}
+ggplot(data = kp_rodents, aes(x = tail_length, y = weight)) +
+  geom_point(aes(color = common_name, shape = common_name), size = 2) +
+  scale_color_manual(values = c("goldenrod","deepskyblue4","darkorange","cyan4")) +
+  theme_minimal()
+```
 
-View locations of `NA`s using `geom_miss_point()`: 
+From the output, we see that 338 total observations (rows) are removed due to missing tail length, weight, or both. Let's explore those further using `geom_miss_point`. 
 
-```{r geom_miss_point_kp, exercise = TRUE}
+##### `r fa("fas fa-robot", fill = "orange")` Example 6.3
+
+Create a scatterplot that shows hidden missing values in a graph of tail length versus weight for all four rodent species in the same panel. 
+
+```{r geom_miss_pt_ex3, exercise = TRUE}
 ggplot(data = kp_rodents, aes(x = tail_length, y = weight)) +
   geom_point() +
   geom_miss_point() +
-  scale_color_manual(values = c("deepskyblue4","orange")) +
+  scale_color_manual(values = c("darkorange","cyan4")) +
   theme_minimal()
 ```
-<br>
 
-#### What in the world is this showing?
+Answer the following questions based on the graph for Example 6.3 above: 
 
-Good question. This one can kind of mess with your head, so let's break it up. 
+1. Are there observed values for rodent weight for which tail length is missing? Where do they show up on the graph?
 
-First, what are the series?
+2. Are there observed values for rodent tail length for which weight is missing? Where do they show up on the graph? 
 
-- The <span style="color: #ff7a12; font-weight: bold;">orange dots</span> indicate our observations that have non-`NA` values existing for both `tail_length` and `weight`. These are all of the observations that are shown in our previous graph for Example 5.1. 
-- The <span style="color: #1a6fa0; font-weight: bold;">blue dots</span> each represent one of our 338 observations (rows) that are missing `tail_length`, `weight`, or both.
+**Answer:** Yes, to both. Breaking down the Example 6.3 graph:
 
-OK, then what are the blue dots close to the x- and y-axes showing me? 
-
-**The blue dots indicate observed values for that axis variable, where the other variable was `NA`.** Specifically: 
-
-- The horizontally-arranged <span style="color: #1a6fa0; font-weight: bold;">blue dots</span> jittered near the x-axis indicate recorded values of `tail_length` for which the `weight` of that observation is `NA`
-- The vertically-arranged <span style="color: #1a6fa0; font-weight: bold;">blue dots</span> jittered near the y-axis indicate recorded values of `weight` for which the `tail_length` of that observation is `NA`
-- The perfect diagonal <span style="color: #1a6fa0; font-weight: bold;">blue dots</span> near the origin indicate observations where both `weight` and `tail_length` are `NA` 
-
-This can help to tease out if and how `NA`s are related to values of another variable. For example, if we find in a theoretical data that set missing values for `fish_counts` are always occurring at higher values of `wave_height`, that might reflect research divers being less likely to count fish in rougher diving conditions.
+- <span style="color: #008280; font-weight: bold;">Teal dots</span> indicate all observations for which both tail length and weight have recorded values
+- The horizontally-arranged <span style="color: #ff7a12; font-weight: bold;">orange dots</span> jittered near the x-axis indicate recorded values of `tail_length` for which the `weight` of that observation is `NA`
+- The vertically-arranged <span style="color: #ff7a12; font-weight: bold;">orange dots</span> jittered near the y-axis indicate recorded values of `weight` for which the `tail_length` of that observation is `NA`
+- The perfect diagonal <span style="color: #ff7a12; font-weight: bold;">orange dots</span> near the origin indicate observations where both `weight` and `tail_length` are `NA` 
 
 We can also split up our graph of missing relationships by group using `facet_wrap()`! 
 
-##### Example 5.3
+##### `r fa("fas fa-robot", fill = "orange")` Example 6.4
 
-Here, we start with the same code as above and add `facet_wrap(~common_name)` to break our graph into a single graph for each species in the study. The optional `scales = "free"` argument allows the x- and y-axis limits to changed within each panel. 
+Split the graph above into four separate panels, one for each species, using `facet_wrap()`.
 
-```{r geom_miss_pt_facet, exercise = TRUE}
+Notice that the **only** difference from the graph above is the added line `+ facet_wrap(~common_name, scales = "free)`. The argument `scales = "free"` allows the x- and y-axis limits to vary for each panel; if you remove that argument, all panels will have the same axis extents. 
+
+```{r geom_miss_pt_ex4, exercise = TRUE}
 ggplot(data = kp_rodents, aes(x = tail_length, y = weight)) +
   geom_point() +
   geom_miss_point() +
-  scale_color_manual(values = c("deepskyblue4","orange")) +
+  scale_color_manual(values = c("darkorange","cyan4")) +
   theme_minimal() +
   facet_wrap(~common_name, scales = "free")
 ```
+
+Next, try it on your own! In the following exercises, explore the existing and `NA` values for two different variables in the `kp_rodents` data. 
+
+##### `r fa("fas fa-keyboard", fill = "orange")` Code exercise
+
+The following is a scatterplot of total length versus weight for cotton rats (a subset of the `kp_rodents` data, stored as `cotton_rat`):
+
+```{r}
+ggplot(data = cotton_rat, aes(x = total_length, y = weight)) +
+  geom_point(color = "darkorange", size = 2) +
+  theme_minimal()
+```
+
+How many observations (rows) are removed for which weight, total length, or both are missing? 
+
+Build on the code for the graph above to add in the hidden observations using `geom_miss_point()`. Write and run your code below!
+
+```{r geom_miss_point_5, exercise = TRUE}
+
+```
+
+```{r geom_miss_point_5-solution, warning = FALSE}
+ggplot(data = cotton_rat, aes(x = total_length, y = weight)) +
+  geom_point() +
+  geom_miss_point() +
+  scale_color_manual(values = c("darkorange", "cyan4")) # Optional for custom colors
+```
+
+##### `r fa("brain", fill = "orange")` Critical thinking
+
+Answer the following about your graph of cotton rat missingness for the total length and weight observations:
+
+- What do the teal dots represent?
+- What do the orange dots represent? 
+- Are there any cotton rat observations where total length is recorded, but weight is `NA`?
+
+In summary, `geom_miss_point()` allows us to explore "hidden" missing observations that were removed because one of the variables is `NA`, and may give insight into whether the missingness of one variable is related to the *value* of another!
+
+
 
 ## 7. Learn more
 
