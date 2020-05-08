@@ -1,0 +1,12 @@
+name: missingexplorer
+title: missingexplorer
+username:
+account: allisonhorst
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2242936
+bundleId: 3121216
+url: https://allisonhorst.shinyapps.io/missingexplorer/
+when: 1588954674.48419
+asMultiple: FALSE
+asStatic: FALSE

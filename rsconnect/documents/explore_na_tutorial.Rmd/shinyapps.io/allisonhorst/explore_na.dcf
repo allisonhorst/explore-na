@@ -5,8 +5,8 @@ account: allisonhorst
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2231549
-bundleId: 3095697
+bundleId: 3104245
 url: https://allisonhorst.shinyapps.io/explore_na/
-when: 1588481868.03458
+when: 1588646205.55057
 asMultiple: FALSE
 asStatic: FALSE
