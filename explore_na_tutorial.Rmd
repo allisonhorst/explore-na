@@ -46,6 +46,9 @@ wf_mouse <- kp_rodents %>%
 cotton_rat <- kp_rodents %>% 
   filter(common_name == "cotton rat")
 
+deer_mouse <- kp_rodents %>% 
+  filter(common_name == "deer mouse")
+
 ```
 
 ## 1. Introduction
@@ -80,22 +83,18 @@ The orange keyboard icon indicates practice coding exercises where you'll be ask
 knitr::include_graphics("www/code_exercise_key.png")  
 ```
 
-#### `r fa("brain", fill = "orange")` = Critical thinking questions
+#### `r fa("brain", fill = "orange")` = Thinking questions
 
-The brain icon indicates critical thinking questions. There may not be a right or wrong answer (and there are probably many right answers to most of them). 
+The brain icon indicates questions for you to think about and answer. For some, there is not a right or wrong answer. There may be *many* right answers. Many of the thinking questions will refer to a coding example or exercise - in those cases make sure to run the relevant code so that you can see the output needed to answer the questions.
 
 
-**NOTE:** *There are many ways to explore `NA` values in R. This tutorial introduces several `naniar` functions that I find really useful. It is not comprehensive.*
+**NOTE:** *There are many ways to explore `NA` values in R. This tutorial introduces `naniar` functions that I find really useful. It is not comprehensive.*
 
 OK, you're all set to start with this tutorial! Click below to meet the data we'll use in this tutorial! 
 
 ## 2. Meet the data
 
 In this tutorial, we'll explore missing values in rodent size measurements generously made available by Andrew Hope and the [Konza Prairie Long Term Ecological Research Program](http://lter.konza.ksu.edu/konza-prairie-long-term-ecological-research-lter). 
-
-**DATA WARNING:** This tutorial works with a simplified subset of the original KP LTER data and is **only** meant as sample data to learn tools for exploring and considering missing values. It should not be used to draw conclusions about relationships, as important variables about location, transect, disposition, and more are excluded. Refer to the original data, metadata and related publications for more information.  Click [HERE](http://lter.konza.ksu.edu/content/csm08-small-mammal-host-parasite-sampling-data-16-linear-trapping-transects-located-8-lter) to access original data and metadata.
-
-**Citation:** Hope A. 2019. CSM08 Small mammal host-parasite sampling data for 16 linear trapping transects located in 8 LTER burn treatment watersheds at Konza Prairie. Environmental Data Initiative. https://doi.org/10.6073/pasta/69109c56fcf21a30a8d37369cb47f8de. Dataset accessed 5/01/2020.
 
 From the Konza Prairie LTER [website](http://lter.konza.ksu.edu/konza-prairie-long-term-ecological-research-lter): "Konza Prairie Biological Station (KPBS) is located on a 3,487 hectare native tallgrass prairie preserve jointly owned by The Nature Conservancy and Kansas State University. The KPBS is located in the Flint Hills of northeastern Kansas (39°05’ N, 96°35’ W), a grassland region of steep-slopes overlain by shallow limestone soils unsuitable for cultivation."
 
@@ -106,6 +105,10 @@ knitr::include_graphics("www/konza.jpg")
 ```
 
 ### Data overview: 
+
+**Data disclaimer:** This tutorial works with a simplified subset of the original KP LTER data and is **only** meant as sample data to learn tools for exploring and considering missing values. It should not be used to draw conclusions about relationships, as important variables about location, transect, disposition, and more are excluded. Refer to the original data, metadata and related publications for more information.  Click [HERE](http://lter.konza.ksu.edu/content/csm08-small-mammal-host-parasite-sampling-data-16-linear-trapping-transects-located-8-lter) to access original data and metadata.
+
+*Data citation:** Hope A. 2019. CSM08 Small mammal host-parasite sampling data for 16 linear trapping transects located in 8 LTER burn treatment watersheds at Konza Prairie. Environmental Data Initiative. https://doi.org/10.6073/pasta/69109c56fcf21a30a8d37369cb47f8de. Dataset accessed 5/01/2020.
 
 The subset has been simplified to 4 rodent species and 9 variables (see metadata at citation link above for more details and collection methods).
 
@@ -169,7 +172,7 @@ For our first steps into `naniar`, we'll use three functions to get quick counts
 
 ### n_miss( ) for `NA` counts
 
-Use [`n_miss()`](https://www.rdocumentation.org/packages/naniar/versions/0.4.2/topics/n_miss) to return the total `NA` count for the entire data frame, or for a specific variable (column). We use `$` to specify a single column (for example, `fruit$apples` refers to the `apples` column in the `fruit` data frame). 
+Use [`n_miss()`](https://www.rdocumentation.org/packages/naniar/versions/0.4.2/topics/n_miss) to return the total `NA` count for the entire data frame, or for a specific variable (column). We use `$` to specify a single column. 
 
 **Our data frame is pre-imported and stored as object `kp_rodents` (for Konza Prairie rodents).** 
 
@@ -332,6 +335,30 @@ Brainstorm several potential explanations for the non-random temporal distributi
 
 **Now, consider your own research or data sets.** How might this type of visualization help you explore and understand missingness in your own work? 
 
+#### Add arguments `cluster = TRUE` or `sort_miss = TRUE`
+
+The default for `vis_miss()`, as we saw in the example above, is to reveal missingness with observations *in the order that they exist in the data frame.* Instead, we might want to cluster or sort the missings. 
+
+From the `vis_miss()` documentation: 
+
+- `cluster = TRUE` will use "hierarchical clustering to arrange rows according to missingness"
+- `sort_miss = TRUE` "arranges the columns in order of missingness"
+
+##### `r fa("fas fa-keyboard", fill = "orange")` Code exercise
+
+Use `vis_miss()` to visualize missings in `kp_rodents`, organized by variable from most to fewest missings.  
+
+```{r vis_miss_cluster, warning = FALSE, exercise = TRUE}
+
+```
+
+```{r vis_miss_cluster-hint, warning = FALSE}
+sort = TRUE
+```
+
+```{r vis_miss_cluster-solution, warning = FALSE}
+vis_miss(kp_rodents, sort = TRUE)
+```
 
 ### gg_miss_fct( ): heatmap of % missings by variable and group level 
 
@@ -637,8 +664,9 @@ Here are some resources to continue in your missingness adventures.
 
 #### Continue exploring around naniar:
 
+- Read Nick Tierney's [Getting started with naniar](http://naniar.njtierney.com/articles/getting-started-w-naniar.html)
 - [Click here](https://cran.r-project.org/web/packages/naniar/vignettes/getting-started-w-naniar.html) for more ways to explore missingness in `naniar`!
-- Read Nick Tierney and Dianne Cook's paper on [Expanding tidy data principles to facilitate missing data exploration, visualization and assessment of imputations](https://arxiv.org/abs/1809.02264)
+- Read Nick and Dianne Cook's paper on [Expanding tidy data principles to facilitate missing data exploration, visualization and assessment of imputations](https://arxiv.org/abs/1809.02264)
 - See Nick's [Gallery of Missing Visualizations](http://naniar.njtierney.com/articles/naniar-visualisation.html) for more options & ideas
 
 #### Learn more about mechanisms of missingness and imputation:
@@ -646,14 +674,52 @@ Here are some resources to continue in your missingness adventures.
 - Nakagawa, Shinichi (2015). Missing data: mechanisms, methods, and messages. In Gordon A. Fox et al. *(Eds.)*, *Ecological Statistics: Contemporary Theory and Application (First Edition)*. Oxford University Press.
 - van Buuren, Stef (2018). *Flexible imputation of missing data*. Chapman & Hall / CRC Press. Available online: https://stefvanbuuren.name/fimd/
   
-
 ### Learn more about learnr
 
 This tutorial was made with the `learnr` package in R. See the `learnr` intro and example tutorials here: https://rstudio.github.io/learnr/
 
+## MEDS talk examples  
 
+These are selected examples for Allison's talk 2020-05-19 talk *How to become a missing explorer: including missingness in exploratory data analysis* at the Bren School of Environmental Science and Management (UC Santa Barbara). 
 
+Make sure to work through the entire tutorial for more information, examples, and activities! 
 
+##### `r fa("fas fa-robot", fill = "orange")` MEDS Talk Example 1: vis_miss()
 
+Use `vis_miss()` to visualize the locations of missing values in our `kp_rodents` data frame: 
 
+```{r vis_miss_meds, exercise = TRUE}
+vis_miss(kp_rodents)
+```
 
+##### `r fa("fas fa-robot", fill = "orange")` MEDS Talk Example 2: gg_miss_fct()
+
+Use `gg_miss_fct()` to create a heatmap of % missings by variable and factor level:
+
+```{r gg_miss_fct_meds, exercise = TRUE}
+gg_miss_fct(kp_rodents, fct = common_name)
+```
+Try updating the factor to a different variable, like `age` or `sex`, to see how your heatmap changes!
+
+##### `r fa("fas fa-robot", fill = "orange")` MEDS Talk Example 3: gg_miss_upset()
+
+Use `gg_miss_upset()` to create an UpSet plot of missing intersections. 
+
+```{r gg_miss_upset_meds, exercise = TRUE}
+gg_miss_upset(kp_rodents, nsets = 7)
+```
+
+##### `r fa("fas fa-robot", fill = "orange")` MEDS Talk Example 4: geom_miss_point()
+
+Use `geom_miss_point()` to add hidden points to a ggplot. 
+
+But first...let's remind ourselves what `ggplot2` does when one or both variables are missing (here, using a subset of data for prairie voles).
+
+```{r geom_miss_point_meds, exercise = TRUE}
+ggplot(data = cotton_rat, aes(x = tail_length, y = weight)) +
+  geom_point()
+```
+
+Now, add another layer to your `ggplot` with `+ geom_miss_point()` to reveal *which observed values of one variable are `NA` for the other variable*. 
+
+##### End MEDS talk examples
