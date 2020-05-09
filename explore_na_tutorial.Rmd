@@ -680,7 +680,7 @@ This tutorial was made with the `learnr` package in R. See the `learnr` intro an
 
 ## MEDS talk examples  
 
-These are selected examples for Allison's talk 2020-05-19 talk *How to become a missing explorer: including missingness in exploratory data analysis* at the Bren School of Environmental Science and Management (UC Santa Barbara). 
+These are selected examples for Allison's 2020-05-19 talk, *How to become a missing explorer: including missingness in exploratory data analysis*, at the Bren School of Environmental Science and Management (UC Santa Barbara). 
 
 Make sure to work through the entire tutorial for more information, examples, and activities! 
 
@@ -689,23 +689,37 @@ Make sure to work through the entire tutorial for more information, examples, an
 Use `vis_miss()` to visualize the locations of missing values in our `kp_rodents` data frame: 
 
 ```{r vis_miss_meds, exercise = TRUE}
+
+```
+
+```{r vis_miss_meds-solution, warning = FALSE}
 vis_miss(kp_rodents)
 ```
 
 ##### `r fa("fas fa-robot", fill = "orange")` MEDS Talk Example 2: gg_miss_fct()
 
-Use `gg_miss_fct()` to create a heatmap of % missings by variable and factor level:
+Use `gg_miss_fct()` to create a heatmap of % missings by variable and factor level. Use the argument `fct = variable_name` to specify the factor variable for which you want to explore missingness by level.  
 
 ```{r gg_miss_fct_meds, exercise = TRUE}
+
+```
+
+```{r gg_miss_fct_meds-solution, warning = FALSE}
 gg_miss_fct(kp_rodents, fct = common_name)
 ```
-Try updating the factor to a different variable, like `age` or `sex`, to see how your heatmap changes!
+
+Try updating the factor in your code above to a different variable, like `age` or `sex`, to see how your heatmap changes!
+
 
 ##### `r fa("fas fa-robot", fill = "orange")` MEDS Talk Example 3: gg_miss_upset()
 
-Use `gg_miss_upset()` to create an UpSet plot of missing intersections. 
+Use `gg_miss_upset()` to create an UpSet plot of missing intersections. Use the `nsets = ` argument to specify how many variables (with missings) you want to look for intersections between. 
 
 ```{r gg_miss_upset_meds, exercise = TRUE}
+
+```
+
+```{r gg_miss_upset_meds-solution, warning = TRUE}
 gg_miss_upset(kp_rodents, nsets = 7)
 ```
 

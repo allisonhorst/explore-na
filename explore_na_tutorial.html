@@ -1167,31 +1167,37 @@ a
 </div>
 <div id="section-meds-talk-examples" class="section level2">
 <h2>MEDS talk examples</h2>
-<p>These are selected examples for Allison’s talk 2020-05-19 talk <em>How to become a missing explorer: including missingness in exploratory data analysis</em> at the Bren School of Environmental Science and Management (UC Santa Barbara).</p>
+<p>These are selected examples for Allison’s 2020-05-19 talk, <em>How to become a missing explorer: including missingness in exploratory data analysis</em>, at the Bren School of Environmental Science and Management (UC Santa Barbara).</p>
 <p>Make sure to work through the entire tutorial for more information, examples, and activities!</p>
 <div id="section-meds-talk-example-1-vis_miss" class="section level5">
 <h5><svg style="height:0.8em;top:.04em;position:relative;fill:orange;" viewBox="0 0 640 512"><path d="M0 256v128c0 17.7 14.3 32 32 32h32V224H32c-17.7 0-32 14.3-32 32zM464 96H352V32c0-17.7-14.3-32-32-32s-32 14.3-32 32v64H176c-44.2 0-80 35.8-80 80v272c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64V176c0-44.2-35.8-80-80-80zM256 416h-64v-32h64v32zm-32-120c-22.1 0-40-17.9-40-40s17.9-40 40-40 40 17.9 40 40-17.9 40-40 40zm128 120h-64v-32h64v32zm96 0h-64v-32h64v32zm-32-120c-22.1 0-40-17.9-40-40s17.9-40 40-40 40 17.9 40 40-17.9 40-40 40zm192-72h-32v192h32c17.7 0 32-14.3 32-32V256c0-17.7-14.3-32-32-32z"/></svg> MEDS Talk Example 1: vis_miss()</h5>
 <p>Use <code>vis_miss()</code> to visualize the locations of missing values in our <code>kp_rodents</code> data frame:</p>
 <div class="tutorial-exercise" data-label="vis_miss_meds" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>vis_miss(kp_rodents)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="vis_miss_meds-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>vis_miss(kp_rodents)</code></pre>
 </div>
 </div>
 <div id="section-meds-talk-example-2-gg_miss_fct" class="section level5">
 <h5><svg style="height:0.8em;top:.04em;position:relative;fill:orange;" viewBox="0 0 640 512"><path d="M0 256v128c0 17.7 14.3 32 32 32h32V224H32c-17.7 0-32 14.3-32 32zM464 96H352V32c0-17.7-14.3-32-32-32s-32 14.3-32 32v64H176c-44.2 0-80 35.8-80 80v272c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64V176c0-44.2-35.8-80-80-80zM256 416h-64v-32h64v32zm-32-120c-22.1 0-40-17.9-40-40s17.9-40 40-40 40 17.9 40 40-17.9 40-40 40zm128 120h-64v-32h64v32zm96 0h-64v-32h64v32zm-32-120c-22.1 0-40-17.9-40-40s17.9-40 40-40 40 17.9 40 40-17.9 40-40 40zm192-72h-32v192h32c17.7 0 32-14.3 32-32V256c0-17.7-14.3-32-32-32z"/></svg> MEDS Talk Example 2: gg_miss_fct()</h5>
-<p>Use <code>gg_miss_fct()</code> to create a heatmap of % missings by variable and factor level:</p>
+<p>Use <code>gg_miss_fct()</code> to create a heatmap of % missings by variable and factor level. Use the argument <code>fct = variable_name</code> to specify the factor variable for which you want to explore missingness by level.</p>
 <div class="tutorial-exercise" data-label="gg_miss_fct_meds" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>gg_miss_fct(kp_rodents, fct = common_name)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
-<p>Try updating the factor to a different variable, like <code>age</code> or <code>sex</code>, to see how your heatmap changes!</p>
+<div class="tutorial-exercise-support" data-label="gg_miss_fct_meds-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>gg_miss_fct(kp_rodents, fct = common_name)</code></pre>
+</div>
+<p>Try updating the factor in your code above to a different variable, like <code>age</code> or <code>sex</code>, to see how your heatmap changes!</p>
 </div>
 <div id="section-meds-talk-example-3-gg_miss_upset" class="section level5">
 <h5><svg style="height:0.8em;top:.04em;position:relative;fill:orange;" viewBox="0 0 640 512"><path d="M0 256v128c0 17.7 14.3 32 32 32h32V224H32c-17.7 0-32 14.3-32 32zM464 96H352V32c0-17.7-14.3-32-32-32s-32 14.3-32 32v64H176c-44.2 0-80 35.8-80 80v272c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64V176c0-44.2-35.8-80-80-80zM256 416h-64v-32h64v32zm-32-120c-22.1 0-40-17.9-40-40s17.9-40 40-40 40 17.9 40 40-17.9 40-40 40zm128 120h-64v-32h64v32zm96 0h-64v-32h64v32zm-32-120c-22.1 0-40-17.9-40-40s17.9-40 40-40 40 17.9 40 40-17.9 40-40 40zm192-72h-32v192h32c17.7 0 32-14.3 32-32V256c0-17.7-14.3-32-32-32z"/></svg> MEDS Talk Example 3: gg_miss_upset()</h5>
-<p>Use <code>gg_miss_upset()</code> to create an UpSet plot of missing intersections.</p>
+<p>Use <code>gg_miss_upset()</code> to create an UpSet plot of missing intersections. Use the <code>nsets =</code> argument to specify how many variables (with missings) you want to look for intersections between.</p>
 <div class="tutorial-exercise" data-label="gg_miss_upset_meds" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>gg_miss_upset(kp_rodents, nsets = 7)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="gg_miss_upset_meds-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>gg_miss_upset(kp_rodents, nsets = 7)</code></pre>
 </div>
 </div>
 <div id="section-meds-talk-example-4-geom_miss_point" class="section level5">
