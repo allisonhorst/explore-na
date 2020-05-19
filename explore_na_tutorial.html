@@ -1181,6 +1181,13 @@ a
 <p><img src="images/bren_na.jpg" width="70%" style="display: block; margin: auto;" /></p>
 <p>These are selected examples for Allison’s 2020-05-19 talk, <em>How to become a missing explorer: including missingness in exploratory data analysis</em>, at the Bren School of Environmental Science and Management (UC Santa Barbara).</p>
 <p>Make sure to work through the entire tutorial for more information, examples, and activities!</p>
+<div id="section-data-packages-already-loaded" class="section level5">
+<h5>Data &amp; packages already loaded!</h5>
+<ul>
+<li><p>Data are pre-stored as an object (data frame) called <code>kp_rodents</code> (for all 4 species) and <code>cotton_rat</code> for just the cotton rat subset used in Example 3. See the <strong>Meet the data</strong> section for more details.</p></li>
+<li><p>All required R packages (including <code>naniar</code> and <code>tidyverse</code> packages) are already attached.</p></li>
+</ul>
+</div>
 <div id="section-meds-talk-example-1-gg_miss_fct" class="section level5">
 <h5><svg style="height:0.8em;top:.04em;position:relative;fill:orange;" viewBox="0 0 640 512"><path d="M0 256v128c0 17.7 14.3 32 32 32h32V224H32c-17.7 0-32 14.3-32 32zM464 96H352V32c0-17.7-14.3-32-32-32s-32 14.3-32 32v64H176c-44.2 0-80 35.8-80 80v272c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64V176c0-44.2-35.8-80-80-80zM256 416h-64v-32h64v32zm-32-120c-22.1 0-40-17.9-40-40s17.9-40 40-40 40 17.9 40 40-17.9 40-40 40zm128 120h-64v-32h64v32zm96 0h-64v-32h64v32zm-32-120c-22.1 0-40-17.9-40-40s17.9-40 40-40 40 17.9 40 40-17.9 40-40 40zm192-72h-32v192h32c17.7 0 32-14.3 32-32V256c0-17.7-14.3-32-32-32z"/></svg> MEDS Talk Example 1: gg_miss_fct()</h5>
 <p>Use <code>gg_miss_fct()</code> to create a heatmap of % missings by variable and factor level. Use the argument <code>fct = variable_name</code> to specify the factor variable for which you want to explore missingness by level.</p>
@@ -1210,6 +1217,11 @@ a
 <pre class="text"><code>ggplot(data = cotton_rat, aes(x = tail_length, y = weight)) +
   geom_point()</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="geom_miss_point_meds-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>ggplot(data = cotton_rat, aes(x = tail_length, y = weight)) +
+  geom_point() +
+  geom_miss_point()</code></pre>
 </div>
 <p>Now, add another layer to your <code>ggplot</code> with <code>+ geom_miss_point()</code> to reveal <em>which observed values of one variable are <code>NA</code> for the other variable</em>.</p>
 </div>

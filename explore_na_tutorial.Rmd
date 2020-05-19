@@ -711,6 +711,12 @@ These are selected examples for Allison's 2020-05-19 talk, *How to become a miss
 
 Make sure to work through the entire tutorial for more information, examples, and activities! 
 
+##### Data & packages already loaded! 
+
+- Data are pre-stored as an object (data frame) called `kp_rodents` (for all 4 species) and `cotton_rat` for just the cotton rat subset used in Example 3. See the **Meet the data** section for more details. 
+
+- All required R packages (including `naniar` and `tidyverse` packages) are already attached. 
+
 ##### `r fa("fas fa-robot", fill = "orange")` MEDS Talk Example 1: gg_miss_fct()
 
 Use `gg_miss_fct()` to create a heatmap of % missings by variable and factor level. Use the argument `fct = variable_name` to specify the factor variable for which you want to explore missingness by level.  
@@ -747,6 +753,12 @@ But first...let's remind ourselves what `ggplot2` does when one or both variable
 ```{r geom_miss_point_meds, exercise = TRUE}
 ggplot(data = cotton_rat, aes(x = tail_length, y = weight)) +
   geom_point()
+```
+
+```{r geom_miss_point_meds-solution, warning = FALSE}
+ggplot(data = cotton_rat, aes(x = tail_length, y = weight)) +
+  geom_point() +
+  geom_miss_point()
 ```
 
 Now, add another layer to your `ggplot` with `+ geom_miss_point()` to reveal *which observed values of one variable are `NA` for the other variable*. 
